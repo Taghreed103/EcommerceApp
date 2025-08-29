@@ -5,8 +5,25 @@ import Link from "next/link";
 import logo from "../../assets/images/freshcart-logo.svg";
 import Image from "next/image";
 import { signOut, useSession } from "next-auth/react";
-
+import { CartRes} from '../cart/typescript/cart.interface'
+import   {useQuery ,  useQueryClient} from "@tanstack/react-query"
 export default function Navbar() {
+ 
+
+
+      const {data } =  useQuery<CartRes>({queryKey: ["cart"]  , queryFn:async()=>{
+   
+       const  res =  await  fetch("/api/cart")  
+       const  payload =  await res.json() ;
+
+       
+       return   payload
+
+   
+       }})
+   
+
+
 
 
   const  [isOpen, setIsOpen] = useState(false);
@@ -16,7 +33,7 @@ export default function Navbar() {
   const { data: session , status} = useSession();
 
   const links = [
-    { path: "/", element: "home" },
+  
     { path: "/products", element: "products" },
   ];
 
@@ -75,12 +92,12 @@ export default function Navbar() {
             </svg>
           </button>
           <div className= {`  ${isOpen&& " hidden" }   w-full md:flex   justify-between `} id="navbar-default">
-            <ul className=" ml-10 font-medium flex flex-col p-4 md:p-0 mt-4 border border-gray-100 rounded-lg  md:flex-row  gap-5 md:mt-0 md:border-0  dark:bg-gray-800  dark:border-gray-700">
+            <ul className="text-black  ml-10 font-medium flex flex-col p-4 md:p-0 mt-4 border border-gray-100 rounded-lg  md:flex-row  gap-5 md:mt-0 md:border-0  dark:bg-gray-800  dark:border-gray-700">
               {links.map((link) => (
                 <li key={link.path}>
                   <Link
                     href={link.path}
-                    className="block py-2 px-3 text-gray-500   md:bg-transparent  md:p-0 dark:text-white md:dark:text-blue-500"
+                    className="block py-2 px-3 text-black-500   md:bg-transparent  md:p-0 dark:text-white md:dark:text-blue-500"
                     aria-current="page"
                   >
                     {link.element.toUpperCase()}
@@ -118,7 +135,22 @@ export default function Navbar() {
              </>:
 
               <>
-                <li><Link  href={"/cart"}>CART</Link><i  className="fa-solid fa-cart-shopping"></i></li>
+                <li className="relative"><Link  href={"/cart"}>
+                   <i  className="fa-solid fa-cart-shopping"></i> 
+                   
+                 <span className="absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 text-xs font-bold bg-red-500 text-white
+                  rounded-full w-5 h-5 flex items-center justify-center">
+                    {data?.numOfCartItems}
+
+                  </span>
+                
+                
+                
+                </Link>
+                
+              
+                
+                </li>
 
                <li className="cursor-pointer"  onClick={handleLogOut} >Log Out </li>
                <li>Hi {session?.user?.name} </li>
