@@ -29,7 +29,7 @@ export default function CheckOut({cartId}:{cartId:string}) {
 
 async   function onSubmit(data:addressSchemaForm) {
  const  shippingAddress=data
-const  res =  await     checkoutOnline(cartId, "" , shippingAddress)
+const  res =  await     checkoutOnline(cartId,  window.location.origin , shippingAddress)
       
   console.log(res)
   if (res?.status==="success"){
